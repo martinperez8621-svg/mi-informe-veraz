@@ -77,7 +77,7 @@ function Index() {
       </section>
 
       {/* FORMULARIO */}
-      <section className="max-w-[600px] mx-auto px-6 py-10">
+      <section id="formulario" className="max-w-[600px] mx-auto px-6 py-10">
         <form action="https://mpago.li/1WmwxjQ" className="space-y-4">
           <input type="text" placeholder="Nombre completo" className="w-full border p-3 rounded-xl" required />
           <input type="text" placeholder="DNI" className="w-full border p-3 rounded-xl" required />
