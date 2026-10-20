@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import foto1 from "@/assets/celular-750.jpg.asset.json";
 import foto2 from "@/assets/mujer-notebook.jpg.asset.json";
@@ -17,6 +18,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [pagoIniciado, setPagoIniciado] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("veraz_intento_pago") === "si" || new URLSearchParams(window.location.search).get("pago") === "exitoso") {
+      setPagoIniciado(true);
+    }
+  }, []);
+
   return (
     <div className="bg-white font-sans">
       {/* HERO */}
@@ -84,8 +93,20 @@ function Index() {
           <input type="text" placeholder="CUIL" className="w-full border p-3 rounded-xl" required />
           <input type="tel" placeholder="WhatsApp" className="w-full border p-3 rounded-xl" required />
           <input type="email" placeholder="Email donde recibirás el PDF" className="w-full border p-3 rounded-xl" required />
-          <button className="w-full bg-[#00A650] text-white font-bold py-4 rounded-xl">Enviar datos y pagar $15.000</button>
+          <button
+            onClick={() => localStorage.setItem("veraz_intento_pago", "si")}
+            className="w-full bg-[#00A650] text-white font-bold py-4 rounded-xl"
+          >
+            Enviar datos y pagar $15.000
+          </button>
         </form>
+        <div className="mt-10 border border-[#0F2C59] rounded-2xl p-5 text-center bg-white">
+          <p className="text-[15px] font-bold text-[#0F2C59]">¿Tu deuda ya está paga y seguís en Veraz?</p>
+          <p className="text-[13px] text-gray-500 mt-1">Si tu caso es para desafectación, podemos evaluarlo de forma profesional.</p>
+          <a href="https://veraz-libre-legal.lovable.app" className="block w-full mt-4 border border-[#0F2C59] text-[#0F2C59] font-bold py-3 rounded-xl text-center">
+            Ver asesoramiento para salir de Veraz
+          </a>
+        </div>
         <p className="text-[11px] text-gray-500 mt-6 text-center">
           Informe de carácter informativo y de interpretación personalizada. No constituye garantía de otorgamiento de créditos ni asegura la modificación automática de bases de datos. Asesoramiento conforme a la Ley 25.326 de Protección de Datos Personales.
         </p>
