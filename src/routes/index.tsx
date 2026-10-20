@@ -26,9 +26,17 @@ function Index() {
         <p className="text-[15px] text-gray-600 mt-4">
           Recibí tu informe completo en formato PDF con tu situación crediticia actual, tu score y antecedentes en centrales de riesgo, con interpretación profesional incluida.
         </p>
-        <a href="https://mpago.li/1WmwxjQ" className="block w-full bg-[#00A650] text-white font-bold text-[18px] py-4 rounded-xl mt-6">
+        <button
+          onClick={() => document.getElementById("formulario")?.scrollIntoView({ behavior: "smooth" })}
+          className="block w-full bg-[#00A650] text-white font-bold text-[18px] py-4 rounded-xl mt-6"
+        >
           Comprar mi informe $15.000
-        </a>
+        </button>
+        <div className="flex justify-center gap-4 mt-3 text-[12px] text-gray-400">
+          <span>🔒 Pago Seguro</span>
+          <span>📧 Entrega 24hs</span>
+          <span>🇦🇷 Ley 25.326</span>
+        </div>
         <p className="text-[12px] text-gray-500 mt-2">Pago seguro por Mercado Pago - Entrega en 24hs por mail</p>
         <div className="mt-8">
           <img src={foto1.url} alt="Reporte Veraz Informe Crediticio 750" className="w-full rounded-2xl shadow-sm" />
@@ -39,11 +47,11 @@ function Index() {
       <section className="max-w-[600px] mx-auto px-6 py-8 bg-[#F5F7FA] rounded-2xl">
         <h3 className="text-[20px] font-bold text-[#0F2C59]">¿Qué incluye tu informe?</h3>
         <ul className="text-left mt-4 space-y-3 text-[15px] text-gray-700">
-          <li>✓ PDF completo con situación en Veraz y centrales de riesgo</li>
-          <li>✓ Puntaje crediticio (Score) actualizado</li>
-          <li>✓ Detalle de entidades informantes, situación y fechas</li>
-          <li>✓ Análisis profesional de tu caso</li>
-          <li>✓ Asesoramiento para evaluar tu situación y alternativas para mejorar tu perfil</li>
+          <li><span className="inline-flex items-center justify-center w-[20px] h-[20px] rounded-full bg-[#00A650] text-white text-[12px] mr-2 align-middle">✓</span>PDF completo con situación en Veraz y centrales de riesgo</li>
+          <li><span className="inline-flex items-center justify-center w-[20px] h-[20px] rounded-full bg-[#00A650] text-white text-[12px] mr-2 align-middle">✓</span>Puntaje crediticio (Score) actualizado</li>
+          <li><span className="inline-flex items-center justify-center w-[20px] h-[20px] rounded-full bg-[#00A650] text-white text-[12px] mr-2 align-middle">✓</span>Detalle de entidades informantes, situación y fechas</li>
+          <li><span className="inline-flex items-center justify-center w-[20px] h-[20px] rounded-full bg-[#00A650] text-white text-[12px] mr-2 align-middle">✓</span>Análisis profesional de tu caso</li>
+          <li><span className="inline-flex items-center justify-center w-[20px] h-[20px] rounded-full bg-[#00A650] text-white text-[12px] mr-2 align-middle">✓</span>Asesoramiento para evaluar tu situación y alternativas para mejorar tu perfil</li>
         </ul>
       </section>
 
@@ -69,7 +77,7 @@ function Index() {
       </section>
 
       {/* FORMULARIO */}
-      <section className="max-w-[600px] mx-auto px-6 py-10">
+      <section id="formulario" className="max-w-[600px] mx-auto px-6 py-10">
         <form action="https://mpago.li/1WmwxjQ" className="space-y-4">
           <input type="text" placeholder="Nombre completo" className="w-full border p-3 rounded-xl" required />
           <input type="text" placeholder="DNI" className="w-full border p-3 rounded-xl" required />
