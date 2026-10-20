@@ -112,6 +112,21 @@ function Index() {
         </p>
         <p className="text-[13px] text-center mt-6">¿Dudas? WhatsApp: 2643198725</p>
       </section>
+
+      {pagoIniciado && (
+        <>
+          <div className="max-w-[600px] mx-auto mt-4 bg-green-100 border border-green-600 text-green-800 text-center p-4 rounded-xl mx-6 font-bold">
+            ¡Pago iniciado! Si ya pagaste, tocá el botón de WhatsApp para enviarnos el comprobante.
+          </div>
+          <a
+            href="https://wa.me/5492643198725?text=Hola%20acabo%20de%20pagar%20mi%20informe%20Veraz%20de%20$15.000%20-%20Mi%20nombre%20es%3A%20"
+            target="_blank"
+            className="fixed bottom-5 right-5 bg-[#25D366] text-white font-bold py-3 px-6 rounded-full shadow-xl z-50"
+          >
+            Ya pagué, enviar comprobante por WhatsApp
+          </a>
+        </>
+      )}
     </div>
   );
 }
