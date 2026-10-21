@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import foto1 from "@/assets/celular-750.jpg.asset.json";
 import foto2 from "@/assets/mujer-notebook.jpg.asset.json";
@@ -17,13 +17,87 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const NOMBRES = [
+  "Antonio P.",
+  "María G.",
+  "Carlos S.",
+  "Laura M.",
+  "Roberto D.",
+  "Paula V.",
+  "Jorge L.",
+  "Florencia R.",
+  "Martín C.",
+  "Daniela S.",
+  "Lucas F.",
+  "Camila T.",
+  "Hernán B.",
+  "Sofía N.",
+  "Ezequiel M.",
+];
+
+const TIEMPOS = ["hace 2 min", "hace 5 min", "hace 8 min", "hace 12 min"];
+
+const COLORES = ["#0F2C59", "#00A650", "#E67E22", "#8E44AD", "#2E86C1"];
+
+const FAQS = [
+  {
+    pregunta: "¿Qué incluye el informe de $15.000?",
+    respuesta: "PDF completo con Veraz, BCRA, score, detalle de entidades, fechas y análisis profesional interpretado.",
+  },
+  {
+    pregunta: "¿En cuánto tiempo llega?",
+    respuesta: "Entrega en 24hs hábiles por mail, con revisión profesional, no automático.",
+  },
+  {
+    pregunta: "¿Es legal y seguro?",
+    respuesta: "Sí, conforme a Ley 25.326. Pago seguro por Mercado Pago. No guardamos datos de tarjeta.",
+  },
+  {
+    pregunta: "¿Qué pasa si estoy en Veraz y mi deuda ya está paga?",
+    respuesta: "Evaluamos tu caso para desafectación. Tenemos asesoramiento para salir de Veraz.",
+  },
+  {
+    pregunta: "¿El informe me garantiza un crédito?",
+    respuesta: "No, es informativo y de interpretación personalizada. No asegura modificación automática de bases.",
+  },
+];
+
 function Index() {
   const [pagoIniciado, setPagoIniciado] = useState(false);
+  const [faqAbierta, setFaqAbierta] = useState<number | null>(null);
+  const [notif, setNotif] = useState<{ nombre: string; tiempo: string; color: string; visible: boolean } | null>(null);
+  const ultimoNombre = useRef<string>("");
 
   useEffect(() => {
     if (localStorage.getItem("veraz_intento_pago") === "si" || new URLSearchParams(window.location.search).get("pago") === "exitoso") {
       setPagoIniciado(true);
     }
+  }, []);
+
+  useEffect(() => {
+    let hideTimer: ReturnType<typeof setTimeout>;
+    const mostrarNotif = () => {
+      let nombre = NOMBRES[Math.floor(Math.random() * NOMBRES.length)];
+      while (nombre === ultimoNombre.current) {
+        nombre = NOMBRES[Math.floor(Math.random() * NOMBRES.length)];
+      }
+      ultimoNombre.current = nombre;
+      setNotif({
+        nombre,
+        tiempo: TIEMPOS[Math.floor(Math.random() * TIEMPOS.length)],
+        color: COLORES[Math.floor(Math.random() * COLORES.length)],
+        visible: false,
+      });
+      setTimeout(() => setNotif((n) => (n ? { ...n, visible: true } : n)), 80);
+      hideTimer = setTimeout(() => setNotif((n) => (n ? { ...n, visible: false } : n)), 5000);
+    };
+    const primerTimer = setTimeout(mostrarNotif, 3000);
+    const intervalo = setInterval(mostrarNotif, 12000);
+    return () => {
+      clearTimeout(primerTimer);
+      clearInterval(intervalo);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   return (
@@ -107,6 +181,29 @@ function Index() {
             Ver asesoramiento para salir de Veraz
           </a>
         </div>
+
+        {/* FAQ */}
+        <div className="mt-10">
+          <h3 className="text-[20px] font-bold text-[#0F2C59] text-center">Preguntas Frecuentes</h3>
+          <div className="mt-4 space-y-3">
+            {FAQS.map((f, i) => (
+              <div key={i} className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setFaqAbierta(faqAbierta === i ? null : i)}
+                  className="w-full flex items-center justify-between gap-3 text-left p-4"
+                >
+                  <span className="text-[14px] font-semibold text-[#0F2C59]">{f.pregunta}</span>
+                  <span className={`text-[#00A650] text-[12px] shrink-0 transition-transform duration-200 ${faqAbierta === i ? "rotate-180" : ""}`}>▼</span>
+                </button>
+                {faqAbierta === i && (
+                  <p className="px-4 pb-4 text-[13px] text-gray-600 leading-snug">{f.respuesta}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
         <p className="text-[11px] text-gray-500 mt-6 text-center">
           Informe de carácter informativo y de interpretación personalizada. No constituye garantía de otorgamiento de créditos ni asegura la modificación automática de bases de datos. Asesoramiento conforme a la Ley 25.326 de Protección de Datos Personales.
         </p>
@@ -126,6 +223,24 @@ function Index() {
             Ya pagué, enviar comprobante por WhatsApp
           </a>
         </>
+      )}
+
+      {notif && (
+        <div
+          className={`fixed bottom-5 left-5 z-40 max-w-[270px] bg-white border border-gray-200 rounded-xl shadow-lg p-3 flex items-center gap-3 transition-all duration-300 ${
+            notif.visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"
+          }`}
+        >
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0"
+            style={{ backgroundColor: notif.color }}
+          >
+            {notif.nombre.split(" ").map((p) => p[0]).join("")}
+          </div>
+          <p className="text-[12px] text-gray-700 leading-snug">
+            <b className="text-gray-900">{notif.nombre}</b> compró el informe completo {notif.tiempo}
+          </p>
+        </div>
       )}
     </div>
   );
