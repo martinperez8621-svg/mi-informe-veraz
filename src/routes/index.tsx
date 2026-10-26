@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import foto1 from "@/assets/celular-750.jpg.asset.json";
-import foto2 from "@/assets/mujer-notebook.jpg.asset.json";
+import { nextNotification, NOTIFICATION_INTERVAL, NOTIFICATION_DURATION } from "@/lib/social-notifications";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Mi Informe Veraz - PDF Personalizado" }] }),
+  head: () => ({ meta: [
+    { title: "Mi Informe Veraz - PDF Personalizado" },
+    { name: "description", content: "Informe Veraz personalizado en PDF con situación crediticia, score y análisis profesional por $15.000." },
+    { property: "og:title", content: "Mi Informe Veraz - PDF Personalizado" },
+    { property: "og:description", content: "Conocé tu situación crediticia con un informe personalizado y análisis profesional." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ] }),
   component: Index,
 });
 
-const NOMBRES = ["Antonio P.","María G.","Carlos S.","Laura M.","Roberto D.","Paula V.","Jorge L.","Florencia R.","Martín C.","Daniela S.","Lucas F.","Camila T.","Hernán B.","Sofía N.","Ezequiel M."] as const;
-const TIEMPOS = ["hace 2 min","hace 5 min","hace 8 min","hace 12 min"] as const;
-const COLORES = ["#0F2C59","#00A650","#E67E22","#8E44AD","#2E86C1"] as const;
 const FAQS = [
   { pregunta: "¿Qué incluye el informe de $15.000?", respuesta: "PDF completo con Veraz, BCRA, score, detalle de entidades, fechas y análisis profesional interpretado." },
   { pregunta: "¿En cuánto tiempo llega?", respuesta: "Entrega en 24hs hábiles por mail, con revisión profesional, no automático." },
@@ -30,18 +34,15 @@ function Index() {
   }, []);
 
   useEffect(() => {
-    let hideTimer: ReturnType<typeof setTimeout>;
+    let hideTimer: ReturnType<typeof setTimeout> | undefined;
     const mostrar = () => {
-      let nombre = NOMBRES[Math.floor(Math.random() * NOMBRES.length)]!;
-      while (nombre === ultimoNombre.current) nombre = NOMBRES[Math.floor(Math.random() * NOMBRES.length)]!;
-      ultimoNombre.current = nombre;
-      setNotif({ nombre, tiempo: TIEMPOS[Math.floor(Math.random() * TIEMPOS.length)]!, color: COLORES[Math.floor(Math.random() * COLORES.length)]!, visible: false });
-      setTimeout(() => setNotif((n) => (n ? { ...n, visible: true } : n)), 80);
-      hideTimer = setTimeout(() => setNotif((n) => (n ? { ...n, visible: false } : n)), 5000);
+      const notification = nextNotification(ultimoNombre.current);
+      ultimoNombre.current = notification.nombre;
+      setNotif(notification);
+      hideTimer = setTimeout(() => setNotif((n) => (n ? { ...n, visible: false } : n)), NOTIFICATION_DURATION);
     };
-    const t1 = setTimeout(mostrar, 3000);
-    const t2 = setInterval(mostrar, 12000);
-    return () => { clearTimeout(t1); clearInterval(t2); clearTimeout(hideTimer); };
+    const interval = setInterval(mostrar, NOTIFICATION_INTERVAL);
+    return () => { clearInterval(interval); clearTimeout(hideTimer); };
   }, []);
 
   return (
@@ -54,7 +55,7 @@ function Index() {
       </section>
 
       <section id="formulario" className="max-w-[600px] mx-auto px-6 py-10">
-        <form action="https://formsubmit.co/martin.perez8621@gmail.com" method="POST" className="space-y-4">
+        <form action="https://formsubmit.co/aripris2020@gmail.com" method="POST" className="space-y-4">
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_subject" value="PEDIDO INFORME VERAZ $15.000" />
           <input type="hidden" name="_template" value="table" />
@@ -77,8 +78,8 @@ function Index() {
           <div className="mt-4 space-y-3">
             {FAQS.map((f, i) => (
               <div key={i} className="border rounded-xl">
-                <button type="button" onClick={() => setFaqAbierta(faqAbierta === i ? null : i)} className="w-full flex justify-between p-4 text-left"><span className="text-[14px] font-semibold">{f.pregunta}</span><span>▼</span></button>
-                {faqAbierta === i && <p className="px-4 pb-4 text-[13px] text-gray-600">{f.respuesta}</p>}
+                <button type="button" aria-expanded={faqAbierta === i} aria-controls={`faq-${i}`} onClick={() => setFaqAbierta(faqAbierta === i ? null : i)} className="w-full flex justify-between gap-3 p-4 text-left"><span className="text-[14px] font-semibold">{f.pregunta}</span><span aria-hidden="true" className={`shrink-0 transition-transform motion-reduce:transition-none ${faqAbierta === i ? "rotate-180" : ""}`}>▼</span></button>
+                {faqAbierta === i && <p id={`faq-${i}`} className="px-4 pb-4 text-[13px] text-gray-600">{f.respuesta}</p>}
               </div>
             ))}
           </div>
@@ -89,8 +90,8 @@ function Index() {
       {pagoIniciado && <a href="https://wa.me/5492643198725?text=Hola%20pague%20informe%20Veraz" className="fixed bottom-5 right-5 bg-[#25D366] text-white font-bold py-3 px-6 rounded-full shadow-xl z-50">Ya pagué, enviar comprobante</a>}
 
       {notif && (
-        <div className={`fixed bottom-5 left-5 z-40 bg-white border rounded-xl shadow-lg p-3 flex gap-3 transition-all ${notif.visible ? "opacity-100" : "opacity-0"}`}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: notif.color }}>{notif.nombre[0]}</div>
+        <div key={notif.nombre} role="status" aria-hidden={!notif.visible} className={`social-notification fixed left-5 z-40 bg-card text-card-foreground border border-border rounded-xl shadow-lg p-3 flex items-center gap-3 w-[270px] max-w-[calc(100vw-40px)] pointer-events-none transition-[opacity,transform] duration-300 motion-reduce:transition-none ${pagoIniciado ? "bottom-24 sm:bottom-5 sm:right-[350px] sm:w-auto" : "bottom-5"} ${notif.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+          <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-primary-foreground font-bold ${notif.color}`}>{notif.nombre.split(" ").map((part) => part.charAt(0)).join("")}</div>
           <p className="text-[12px]"><b>{notif.nombre}</b> compró el informe completo {notif.tiempo}</p>
         </div>
       )}

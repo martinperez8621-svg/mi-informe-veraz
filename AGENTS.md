@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep notification selection and timing in the browser-safe social-notifications module so random rotation rules can be tested without timers or network access.
