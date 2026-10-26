@@ -32,7 +32,7 @@ function Index() {
   const ultimoNombre = useRef<string>("");
 
   useEffect(() => {
-    if (localStorage.getItem("veraz_intento_pago") === "si") setPagoIniciado(true);
+    if (localStorage.getItem("veraz_intento_pago") === "si" || new URLSearchParams(window.location.search).get("pago") === "exitoso") setPagoIniciado(true);
   }, []);
 
   useEffect(() => {
