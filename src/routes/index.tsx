@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import foto1 from "@/assets/celular-750.jpg.asset.json";
 import { nextNotification, NOTIFICATION_INTERVAL, NOTIFICATION_DURATION } from "@/lib/social-notifications";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -78,7 +79,7 @@ function Index() {
           <div className="mt-4 space-y-3">
             {FAQS.map((f, i) => (
               <div key={i} className="border rounded-xl">
-                <button type="button" aria-expanded={faqAbierta === i} aria-controls={`faq-${i}`} onClick={() => setFaqAbierta(faqAbierta === i ? null : i)} className="w-full flex justify-between gap-3 p-4 text-left"><span className="text-[14px] font-semibold">{f.pregunta}</span><span aria-hidden="true" className={`shrink-0 transition-transform motion-reduce:transition-none ${faqAbierta === i ? "rotate-180" : ""}`}>▼</span></button>
+                <Button variant="ghost" type="button" aria-expanded={faqAbierta === i} aria-controls={`faq-${i}`} onClick={() => setFaqAbierta(faqAbierta === i ? null : i)} className="w-full h-auto flex justify-between gap-3 whitespace-normal p-4 text-left"><span className="text-[14px] font-semibold">{f.pregunta}</span><span aria-hidden="true" className={`shrink-0 transition-transform motion-reduce:transition-none ${faqAbierta === i ? "rotate-180" : ""}`}>▼</span></Button>
                 {faqAbierta === i && <p id={`faq-${i}`} className="px-4 pb-4 text-[13px] text-gray-600">{f.respuesta}</p>}
               </div>
             ))}
